@@ -18,6 +18,7 @@ import {
 } from "./lib";
 import { SecretProvider } from "./secret-provider";
 import { ThumborMapper } from "./thumbor-mapper";
+import { WPOffloadMediaMapper } from "./wp-offload-media-mapper";
 
 type OriginalImageInfo = Partial<{
   contentType: string;
@@ -247,9 +248,9 @@ export class ImageRequest {
       const thumborMapping = new ThumborMapper();
       return thumborMapping.mapPathToEdits(event.path);
     } else if (requestType === RequestTypes.CUSTOM) {
-      const thumborMapping = new ThumborMapper();
-      const parsedPath = thumborMapping.parseCustomPath(event.path);
-      return thumborMapping.mapPathToEdits(parsedPath);
+      console.log( 'ParseImageEdit => ', 'WPOffloadMediaMapper');
+      const wpOffloadMediaMapper = new WPOffloadMediaMapper();
+      return wpOffloadMediaMapper.mapPathToEdits(event);
     } else {
       throw new ImageHandlerError(
         StatusCodes.BAD_REQUEST,
@@ -314,12 +315,14 @@ export class ImageRequest {
     const matchDefault = /^(\/?)([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
     const matchThumbor =
       /^(\/?)((fit-in)?|(filters:.+\(.?\))?|(unsafe)?)(((.(?!(\.[^.\\/]+$)))*$)|.*(\.jpg$|\.jpeg$|.\.png$|\.webp$|\.tiff$|\.tif$|\.svg$|\.gif$))/i;
-    const { REWRITE_MATCH_PATTERN, REWRITE_SUBSTITUTION } = process.env;
+    const { REWRITE_MATCH_PATTERN, REWRITE_SUBSTITUTION, CUSTOMCODE } = process.env;
     const definedEnvironmentVariables =
       REWRITE_MATCH_PATTERN !== "" &&
       REWRITE_SUBSTITUTION !== "" &&
       REWRITE_MATCH_PATTERN !== undefined &&
       REWRITE_SUBSTITUTION !== undefined;
+
+    const customCode = CUSTOMCODE !== undefined;
 
     // Check if path is base 64 encoded
     let isBase64Encoded = true;
@@ -330,10 +333,12 @@ export class ImageRequest {
       isBase64Encoded = false;
     }
 
+	console.log('definedEnvironmentVariables || customCode => ', definedEnvironmentVariables, customCode);
+
     if (matchDefault.test(path) && isBase64Encoded) {
       // use sharp
       return RequestTypes.DEFAULT;
-    } else if (definedEnvironmentVariables) {
+    } else if (definedEnvironmentVariables || customCode) {
       // use rewrite function then thumbor mappings
       return RequestTypes.CUSTOM;
     } else if (matchThumbor.test(path)) {
