@@ -105,6 +105,7 @@ export class BackEnd extends Construct {
         ENABLE_DEFAULT_FALLBACK_IMAGE: props.enableDefaultFallbackImage,
         DEFAULT_FALLBACK_IMAGE_BUCKET: props.fallbackImageS3Bucket,
         DEFAULT_FALLBACK_IMAGE_KEY: props.fallbackImageS3KeyBucket,
+        CUSTOMCODE: "true",
       },
       depsLockFilePath: path.join(__dirname, "../../../image-handler/package-lock.json"),
       bundling: {
@@ -143,13 +144,13 @@ export class BackEnd extends Construct {
       maxTtl: Duration.days(365),
       enableAcceptEncodingGzip: true,
       headerBehavior: CacheHeaderBehavior.allowList("origin", "accept"),
-      queryStringBehavior: CacheQueryStringBehavior.allowList("signature"),
+      queryStringBehavior: CacheQueryStringBehavior.allowList("signature", "width", "height", "crop"),
     });
 
     const originRequestPolicy = new OriginRequestPolicy(this, "OriginRequestPolicy", {
       originRequestPolicyName: `ServerlessImageHandler-${props.uuid}`,
       headerBehavior: CacheHeaderBehavior.allowList("origin", "accept"),
-      queryStringBehavior: CacheQueryStringBehavior.allowList("signature"),
+      queryStringBehavior: CacheQueryStringBehavior.allowList("signature", "width", "height", "crop"),
     });
 
     const apiGatewayRestApi = RestApi.fromRestApiId(
