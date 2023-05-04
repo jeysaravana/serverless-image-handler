@@ -337,6 +337,12 @@ describe("setup", () => {
         path: "/eyJidWNrZXQiOiJ2YWxpZEJ1Y2tldCIsImtleSI6InZhbGlkS2V5IiwiZWRpdHMiOnsidG9Gb3JtYXQiOiJwbmcifX0=",
         queryStringParameters: {
           signature: "4d41311006641a56de7bca8abdbda91af254506107a2c7b338a13ca2fa95eac3",
+          mode: 'crop',
+          height: 300,
+          width: 300,
+          h: 300,
+          w: 300,
+          quality: 75,
         },
       };
 
@@ -428,6 +434,12 @@ describe("setup", () => {
         path: "/eyJidWNrZXQiOiJ2YWxpZEJ1Y2tldCIsImtleSI6InZhbGlkS2V5IiwiZWRpdHMiOnsidG9Gb3JtYXQiOiJwbmcifX0=",
         queryStringParameters: {
           signature: "invalid",
+          mode: 'crop',
+          height: 300,
+          width: 300,
+          h: 300,
+          w: 300,
+          quality: 75,
         },
       };
 
@@ -465,6 +477,12 @@ describe("setup", () => {
         path: "/eyJidWNrZXQiOiJ2YWxpZEJ1Y2tldCIsImtleSI6InZhbGlkS2V5IiwiZWRpdHMiOnsidG9Gb3JtYXQiOiJwbmcifX0=",
         queryStringParameters: {
           signature: "4d41311006641a56de7bca8abdbda91af254506107a2c7b338a13ca2fa95eac3",
+          mode: 'crop',
+          height: 300,
+          width: 300,
+          h: 300,
+          w: 300,
+          quality: 75,
         },
       };
 
