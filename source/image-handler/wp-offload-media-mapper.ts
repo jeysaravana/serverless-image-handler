@@ -413,16 +413,20 @@ export class WPOffloadMediaMapper {
   private mapResize(queryStringParameters: ImageHandlerEvent["queryStringParameters"]): ImageEdits {
     if (queryStringParameters?.height || queryStringParameters?.width) {
       // Assign dimensions from the first match only to avoid parsing dimension from image file names
-      const {width = null, height = null} = queryStringParameters;
+      const {width = null, height = null, w = null, h = null} = queryStringParameters;
 
       const resizeEdit: ImageEdits = { resize: {} };
 
       // If width or height is 0, fit would be inside.
-      if (width === 0 || height === 0) {
+      if (width === 0 || height === 0 || width === 0 || height === 0) {
         resizeEdit.resize.fit = ImageFitTypes.INSIDE;
       }
       resizeEdit.resize.width = width === 0 ? null : width;
       resizeEdit.resize.height = height === 0 ? null : height;
+      if ( resizeEdit.resize.width === null || resizeEdit.resize.height === null ) {
+        resizeEdit.resize.width = w === 0 ? null : w;
+        resizeEdit.resize.height = w === 0 ? null : w;
+      }
       console.log('resizeEdit => ', resizeEdit);
       return resizeEdit;
     }
