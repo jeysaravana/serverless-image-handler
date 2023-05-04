@@ -16,10 +16,12 @@ export class WPOffloadMediaMapper {
    * @returns Image edits based on the request path.
    */
   public mapPathToEdits(event: ImageHandlerEvent): ImageEdits {
-	const path = event.path;
+    const path = event.path;
     const fileFormat = path.substring(path.lastIndexOf(".") + 1) as ImageFormatTypes;
 
-    let edits: ImageEdits = this.mergeEdits(this.mapCrop(path), this.mapResize(event.queryStringParameters), this.mapFitIn(path));
+    let edits: ImageEdits = this.mergeEdits(this.mapCrop(path),
+      this.mapResize(event.queryStringParameters),
+      this.mapFitIn(path));
 
     // parse the image path. we have to sort here to make sure that when we have a file name without extension,
     // and `format` and `quality` filters are passed, then the `format` filter will go first to be able
@@ -410,19 +412,19 @@ export class WPOffloadMediaMapper {
    */
   private mapResize(queryStringParameters: ImageHandlerEvent["queryStringParameters"]): ImageEdits {
     if (queryStringParameters?.height || queryStringParameters?.width) {
-		// Assign dimensions from the first match only to avoid parsing dimension from image file names
-		const {width = null, height = null} = queryStringParameters;
+      // Assign dimensions from the first match only to avoid parsing dimension from image file names
+      const {width = null, height = null} = queryStringParameters;
 
-		const resizeEdit: ImageEdits = { resize: {} };
+      const resizeEdit: ImageEdits = { resize: {} };
 
-		// If width or height is 0, fit would be inside.
-		if (width === 0 || height === 0) {
-			resizeEdit.resize.fit = ImageFitTypes.INSIDE;
-		}
-		resizeEdit.resize.width = width === 0 ? null : width;
-		resizeEdit.resize.height = height === 0 ? null : height;
-		console.log('resizeEdit => ', resizeEdit);
-		return resizeEdit;
+      // If width or height is 0, fit would be inside.
+      if (width === 0 || height === 0) {
+        resizeEdit.resize.fit = ImageFitTypes.INSIDE;
+      }
+      resizeEdit.resize.width = width === 0 ? null : width;
+      resizeEdit.resize.height = height === 0 ? null : height;
+      console.log('resizeEdit => ', resizeEdit);
+      return resizeEdit;
     }
 
     return WPOffloadMediaMapper.EMPTY_IMAGE_EDITS;

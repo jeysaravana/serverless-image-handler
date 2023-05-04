@@ -10,6 +10,9 @@ export interface ImageHandlerEvent {
   path?: string;
   queryStringParameters?: {
     signature: string;
+    crop: number;
+    height: number;
+    width: number;
   };
   requestContext?: {
     elb?: unknown;
