@@ -16,6 +16,8 @@ export interface ImageHandlerEvent {
     h: number;
     w: number;
     quality: number;
+    q: number;
+	bgcolor: string;
   };
   requestContext?: {
     elb?: unknown;

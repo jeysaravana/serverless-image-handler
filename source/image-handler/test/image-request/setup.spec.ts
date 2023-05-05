@@ -343,6 +343,8 @@ describe("setup", () => {
           h: 300,
           w: 300,
           quality: 75,
+          q: 75,
+          bgcolor: '28a745',
         },
       };
 
@@ -440,6 +442,8 @@ describe("setup", () => {
           h: 300,
           w: 300,
           quality: 75,
+          q: 75,
+          bgcolor: '28a745',
         },
       };
 
@@ -483,6 +487,8 @@ describe("setup", () => {
           h: 300,
           w: 300,
           quality: 75,
+          q: 75,
+          bgcolor: '28a745',
         },
       };
 

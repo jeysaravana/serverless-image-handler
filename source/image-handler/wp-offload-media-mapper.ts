@@ -19,9 +19,12 @@ export class WPOffloadMediaMapper {
     const path = event.path;
     const fileFormat = path.substring(path.lastIndexOf(".") + 1) as ImageFormatTypes;
 
-    let edits: ImageEdits = this.mergeEdits(this.mapCrop(path),
+    let edits: ImageEdits = this.mergeEdits(
+      this.mapCrop(path),
       this.mapResize(event.queryStringParameters),
-      this.mapFitIn(path));
+      this.mapBackgroundColor(event.queryStringParameters),
+      this.mapFitIn(path)
+    );
 
     // parse the image path. we have to sort here to make sure that when we have a file name without extension,
     // and `format` and `quality` filters are passed, then the `format` filter will go first to be able
@@ -34,6 +37,8 @@ export class WPOffloadMediaMapper {
     for (const filter of filters) {
       edits = this.mapFilter(filter, fileFormat, edits);
     }
+
+    console.log('edits', edits);
 
     return edits;
   }
@@ -411,26 +416,43 @@ export class WPOffloadMediaMapper {
    * @returns Image edits associated with resize.
    */
   private mapResize(queryStringParameters: ImageHandlerEvent["queryStringParameters"]): ImageEdits {
-    if (queryStringParameters?.height || queryStringParameters?.width) {
+    if (queryStringParameters?.height || queryStringParameters?.width || queryStringParameters?.h || queryStringParameters?.w) {
       // Assign dimensions from the first match only to avoid parsing dimension from image file names
       const {width = null, height = null, w = null, h = null} = queryStringParameters;
 
       const resizeEdit: ImageEdits = { resize: {} };
 
       // If width or height is 0, fit would be inside.
-      if (width === 0 || height === 0 || width === 0 || height === 0) {
+      if (width === 0 || height === 0 || w === 0 || h === 0) {
         resizeEdit.resize.fit = ImageFitTypes.INSIDE;
       }
       resizeEdit.resize.width = width === 0 ? null : width;
       resizeEdit.resize.height = height === 0 ? null : height;
-      if ( resizeEdit.resize.width === null || resizeEdit.resize.height === null ) {
+      if ( resizeEdit.resize.width === null ) {
         resizeEdit.resize.width = w === 0 ? null : w;
-        resizeEdit.resize.height = w === 0 ? null : w;
+      }
+      if ( resizeEdit.resize.height === null ) {
+        resizeEdit.resize.height = h === 0 ? null : h;
       }
       console.log('resizeEdit => ', resizeEdit);
       return resizeEdit;
     }
 
+    return WPOffloadMediaMapper.EMPTY_IMAGE_EDITS;
+  }
+
+
+  /**
+   * Maps the image path to BGColor image edit.
+   * @param queryStringParameters An image path.
+   * @returns Image edits associated with resize.
+   */
+  private mapBackgroundColor(queryStringParameters: ImageHandlerEvent["queryStringParameters"]): ImageEdits {
+    const { bgcolor = null } = queryStringParameters;
+    if (bgcolor) {
+      const resizeEdit: ImageEdits = { flatten: {} };
+      resizeEdit.flatten.background = Color(bgcolor).object()
+    }
     return WPOffloadMediaMapper.EMPTY_IMAGE_EDITS;
   }
 
