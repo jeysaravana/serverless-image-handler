@@ -448,7 +448,7 @@ export class WPOffloadMediaMapper {
    * @returns Image edits associated with resize.
    */
   private mapBackgroundColor(queryStringParameters: ImageHandlerEvent["queryStringParameters"]): ImageEdits {
-    const { bgcolor = null } = queryStringParameters;
+    const { bgcolor = null } = queryStringParameters || {};
     if (bgcolor) {
       const resizeEdit: ImageEdits = { flatten: {} };
       resizeEdit.flatten.background = Color(bgcolor).object()
